@@ -45,9 +45,9 @@ export default function OgHead({
 }
 
 export const DEFAULT_OG: OgMetaProps = {
-  title: "Shopstr | Bitcoin-Native Nostr Marketplace | Shop Freely",
+  title: "Satstr | Bitcoin-Native Nostr Marketplace | Shop Freely",
   description:
-    "Shopstr is a global, permissionless marketplace built on Nostr. Buy and sell goods with Bitcoin and Lightning — no KYC, no censorship, no middlemen.",
+    "Satstr is a global, permissionless marketplace built on Nostr. Buy and sell goods with Bitcoin and Lightning — no KYC, no censorship, no middlemen.",
   image: "/shopstr-2000x2000.png",
   url: "/",
 };

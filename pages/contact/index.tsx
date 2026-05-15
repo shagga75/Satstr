@@ -11,13 +11,13 @@ import {
 const structuredData = {
   "@context": "https://schema.org",
   "@type": "ContactPage",
-  name: "Contact Shopstr",
+  name: "Contact Satstr",
   url: "https://shopstr.market/contact",
   description:
-    "Get in touch with the Shopstr team via Nostr, GitHub, or social media. We are a decentralized open-source project — all communication happens on open protocols.",
+    "Get in touch with the Satstr team via Nostr, GitHub, or social media. We are a decentralized open-source project — all communication happens on open protocols.",
   mainEntity: {
     "@type": "Organization",
-    name: "Shopstr",
+    name: "Satstr",
     url: "https://shopstr.market",
     sameAs: ["https://github.com/shopstr-eng/shopstr"],
   },
@@ -29,7 +29,7 @@ const channels = [
     title: "Nostr",
     handle: "@shopstrmarkets on Nostr",
     description:
-      "The best way to reach the team is directly on Nostr. Follow the official Shopstr account for announcements, updates, and community discussion.",
+      "The best way to reach the team is directly on Nostr. Follow the official Satstr account for announcements, updates, and community discussion.",
     cta: "Open on njump.me",
     href: "https://njump.me/npub15dc33fyg3cpd9r58vlqge2hh8dy6hkkrjxkhluv2xpyfreqkmsesesyv6e",
     external: true,
@@ -60,10 +60,10 @@ export default function Contact() {
   return (
     <>
       <Head>
-        <title>Contact Shopstr | Get in Touch via Nostr & GitHub</title>
+        <title>Contact Satstr | Get in Touch via Nostr & GitHub</title>
         <meta
           name="description"
-          content="Contact the Shopstr team via Nostr, GitHub, or X. We are a decentralized open-source project — all communication happens on open protocols."
+          content="Contact the Satstr team via Nostr, GitHub, or X. We are a decentralized open-source project — all communication happens on open protocols."
         />
         <link rel="canonical" href="https://shopstr.market/contact" />
         <script
@@ -85,11 +85,11 @@ export default function Contact() {
           <h1 className="text-light-text dark:text-dark-text mb-6 text-center text-4xl font-bold md:text-5xl">
             Contact{" "}
             <span className="text-shopstr-purple dark:text-shopstr-yellow">
-              Shopstr
+              Satstr
             </span>
           </h1>
           <p className="text-light-text/80 dark:text-dark-text/80 mx-auto mb-16 max-w-2xl text-center text-xl leading-relaxed">
-            Shopstr is a decentralized, open-source project. There is no central
+            Satstr is a decentralized, open-source project. There is no central
             office — all communication happens on open protocols like Nostr and
             GitHub.
           </p>

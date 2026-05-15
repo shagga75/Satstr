@@ -90,7 +90,7 @@ export default function Landing() {
         </h1>
         <p className="text-light-text dark:text-dark-text mb-3 max-w-2xl text-xl leading-relaxed font-light">
           Traditional marketplaces freeze accounts, take cuts, and demand ID.
-          Shopstr gives the power back to you.
+          Satstr gives the power back to you.
         </p>
         <p className="text-shopstr-purple dark:text-shopstr-yellow mb-8 text-sm font-semibold tracking-wide uppercase">
           No account suspension possible · Your keys, your shop
@@ -176,7 +176,7 @@ export default function Landing() {
             </span>
           </h2>
           <p className="text-light-text/80 dark:text-dark-text/80 mx-auto max-w-2xl text-lg">
-            Shopstr was built because this kept happening. Here is what is
+            Satstr was built because this kept happening. Here is what is
             different.
           </p>
         </div>

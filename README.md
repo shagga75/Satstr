@@ -1,6 +1,6 @@
-# Shopstr
+# Satstr
 
-A global, permissionless Nostr marketplace for Bitcoin commerce.
+A decentralized Fedi Mini App marketplace — fork of [Shopstr](https://github.com/shopstr-eng/shopstr), built for permissionless Bitcoin commerce on Nostr.
 
 # Supported NIPs
 

@@ -16,18 +16,18 @@ const structuredData = {
   "@graph": [
     {
       "@type": "AboutPage",
-      name: "About Shopstr",
+      name: "About Satstr",
       url: "https://shopstr.market/about",
       description:
-        "Learn about Shopstr — the permissionless, Bitcoin-native marketplace built on the Nostr protocol. Discover our mission, technology, and open-source foundations.",
+        "Learn about Satstr — the permissionless, Bitcoin-native marketplace built on the Nostr protocol. Discover our mission, technology, and open-source foundations.",
       mainEntity: {
         "@type": "Organization",
-        name: "Shopstr",
+        name: "Satstr",
         url: "https://shopstr.market",
         logo: "https://shopstr.market/shopstr-2000x2000.png",
         foundingDate: "2023",
         description:
-          "Shopstr is a censorship-resistant, Bitcoin-native marketplace built on the Nostr protocol, enabling global permissionless peer-to-peer commerce.",
+          "Satstr is a censorship-resistant, Bitcoin-native marketplace built on the Nostr protocol, enabling global permissionless peer-to-peer commerce.",
         sameAs: [
           "https://github.com/shopstr-eng/shopstr",
           "https://x.com/shopstrmarkets",
@@ -51,10 +51,10 @@ export default function About() {
   return (
     <>
       <Head>
-        <title>About Shopstr | Bitcoin-Native Nostr Marketplace</title>
+        <title>About Satstr | Bitcoin-Native Nostr Marketplace</title>
         <meta
           name="description"
-          content="Shopstr is a global, permissionless marketplace built on the Nostr protocol. Learn about our mission to enable censorship-resistant Bitcoin commerce worldwide."
+          content="Satstr is a global, permissionless marketplace built on the Nostr protocol. Learn about our mission to enable censorship-resistant Bitcoin commerce worldwide."
         />
         <link rel="canonical" href="https://shopstr.market/about" />
         <script
@@ -76,7 +76,7 @@ export default function About() {
           <h1 className="text-light-text dark:text-dark-text mb-6 text-center text-4xl font-bold md:text-5xl">
             About{" "}
             <span className="text-shopstr-purple dark:text-shopstr-yellow">
-              Shopstr
+              Satstr
             </span>
           </h1>
           <p className="text-light-text/80 dark:text-dark-text/80 mx-auto mb-16 max-w-3xl text-center text-xl leading-relaxed">
@@ -92,11 +92,11 @@ export default function About() {
             </h2>
             <div className="bg-light-fg text-light-text dark:bg-dark-fg dark:text-dark-text space-y-5 rounded-2xl p-8 text-lg leading-relaxed">
               <p>
-                Shopstr exists to make commerce as free as the internet was
+                Satstr exists to make commerce as free as the internet was
                 originally intended to be. Traditional e-commerce platforms
                 require merchants to register accounts, submit identity
                 documents, and operate under terms that can be changed or
-                revoked at any time. Shopstr removes all of those barriers.
+                revoked at any time. Satstr removes all of those barriers.
               </p>
               <p>
                 Built on the{" "}
@@ -109,7 +109,7 @@ export default function About() {
                     Nostr protocol
                   </a>
                 </Link>{" "}
-                — an open, decentralized communication standard — Shopstr gives
+                — an open, decentralized communication standard — Satstr gives
                 merchants permanent, censorship-resistant storefronts controlled
                 by their own cryptographic keys. No one can delete your listings
                 or freeze your funds.
@@ -169,17 +169,17 @@ export default function About() {
                 {
                   icon: GlobeAltIcon,
                   title: "Globally Open",
-                  body: "Shopstr is accessible to anyone with an internet connection. No geographic restrictions, no currency conversion fees, no country blocks.",
+                  body: "Satstr is accessible to anyone with an internet connection. No geographic restrictions, no currency conversion fees, no country blocks.",
                 },
                 {
                   icon: CodeBracketIcon,
                   title: "Open Source",
-                  body: "Every line of code is publicly auditable on GitHub. Shopstr implements NIP-02, NIP-99, NIP-47, NIP-57, and NIP-85 for maximum interoperability.",
+                  body: "Every line of code is publicly auditable on GitHub. Satstr implements NIP-02, NIP-99, NIP-47, NIP-57, and NIP-85 for maximum interoperability.",
                 },
                 {
                   icon: UserGroupIcon,
                   title: "Community Driven",
-                  body: "Shopstr is built by and for the Bitcoin and Nostr communities. Feature development is informed by real users, not investors or advertisers.",
+                  body: "Satstr is built by and for the Bitcoin and Nostr communities. Feature development is informed by real users, not investors or advertisers.",
                 },
               ].map(({ icon: Icon, title, body }) => (
                 <div
@@ -209,8 +209,8 @@ export default function About() {
             </h2>
             <div className="bg-light-fg text-light-text dark:bg-dark-fg dark:text-dark-text space-y-5 rounded-2xl p-8 text-lg leading-relaxed">
               <p>
-                Shopstr is built entirely on open standards. Product listings
-                are published as{" "}
+                Satstr is built entirely on open standards. Product listings are
+                published as{" "}
                 <Link
                   href="https://github.com/nostr-protocol/nostr"
                   passHref
@@ -261,7 +261,7 @@ export default function About() {
           {/* Network Stats with Citations */}
           <section className="mb-16">
             <h2 className="text-light-text dark:text-dark-text mb-8 text-2xl font-bold md:text-3xl">
-              The Network Powering Shopstr
+              The Network Powering Satstr
             </h2>
             <div className="grid gap-5 sm:grid-cols-2">
               {[
@@ -285,7 +285,7 @@ export default function About() {
                   stat: "100+ Countries",
                   label: "Where Bitcoin is legal or accessible",
                   detail:
-                    "Bitcoin is fully legal in at least 45 of the 75 major economies studied by the Atlantic Council, with no outright ban in the vast majority of countries worldwide, making Shopstr accessible to a global buyer and seller base.",
+                    "Bitcoin is fully legal in at least 45 of the 75 major economies studied by the Atlantic Council, with no outright ban in the vast majority of countries worldwide, making Satstr accessible to a global buyer and seller base.",
                   source: "Atlantic Council",
                   href: "https://www.atlanticcouncil.org/programs/geoeconomics-center/cryptoregulationtracker/",
                 },
@@ -293,7 +293,7 @@ export default function About() {
                   stat: "0% Fees",
                   label: "Mandatory platform fee on transactions",
                   detail:
-                    "Shopstr has no mandatory platform fees on peer-to-peer transactions. Sellers keep the full sale amount, minus only standard Bitcoin network fees, and may optionally specify a donation rate to give back to the site on their sales at their discretion.",
+                    "Satstr has no mandatory platform fees on peer-to-peer transactions. Sellers keep the full sale amount, minus only standard Bitcoin network fees, and may optionally specify a donation rate to give back to the site on their sales at their discretion.",
                   source: null,
                   href: null,
                 },
@@ -333,10 +333,10 @@ export default function About() {
               Fully Open Source
             </h2>
             <p className="text-light-text/90 dark:text-dark-text/90 mb-6 text-lg leading-relaxed">
-              Shopstr is not a walled garden — it is an open-source project
+              Satstr is not a walled garden — it is an open-source project
               anyone can inspect, fork, and build upon. The codebase is licensed
               under open-source terms and all marketplace data lives on public
-              Nostr relays. This means even if the Shopstr website went offline,
+              Nostr relays. This means even if the Satstr website went offline,
               your listings and reputation would remain accessible through any
               Nostr client.
             </p>

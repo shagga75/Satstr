@@ -356,7 +356,7 @@ export default function SignInModal({
                     width={80}
                   />
                   <h1 className="text-shopstr-purple-light dark:text-shopstr-yellow-light ml-3 text-4xl font-bold">
-                    Shopstr
+                    Satstr
                   </h1>
                 </div>
 
@@ -367,7 +367,7 @@ export default function SignInModal({
                 <div className="flex w-full max-w-md flex-col space-y-4">
                   <div className="text-center">
                     <p className="text-light-text dark:text-dark-text mb-2 text-lg font-bold">
-                      New to Shopstr?
+                      New to Satstr?
                     </p>
                     <p className="text-light-text dark:text-dark-text mb-4 text-sm">
                       Sign up to get started!
@@ -627,7 +627,7 @@ export default function SignInModal({
                       width={50}
                     />
                     <div className="text-shopstr-purple-light dark:text-shopstr-yellow-light ml-2 text-2xl font-bold">
-                      Shopstr
+                      Satstr
                     </div>
                   </div>
 
@@ -817,7 +817,7 @@ export default function SignInModal({
                       setPassphrase("");
                     }}
                   >
-                    New to Shopstr? Sign up
+                    New to Satstr? Sign up
                   </button>
                 </div>
               </div>

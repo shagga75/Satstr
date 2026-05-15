@@ -9,7 +9,7 @@ export default function handler(_req: NextApiRequest, res: NextApiResponse) {
 
   return res.status(200).json({
     schema: "https://open-agents.com/schema/v1",
-    name: "Shopstr",
+    name: "Satstr",
     version: "2.0.0",
     description:
       "A permissionless marketplace built on the Nostr protocol for Bitcoin-enabled commerce. Browse products, view seller profiles, read reviews, place orders, create listings, manage shops, upload media, send messages, and participate in communities via MCP. Full marketplace participation as both buyer and seller.",

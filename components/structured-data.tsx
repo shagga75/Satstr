@@ -5,11 +5,11 @@ import { safeJsonLdString } from "@/utils/safe-json-ld";
 const organizationSchema = {
   "@context": "https://schema.org",
   "@type": "Organization",
-  name: "Shopstr",
+  name: "Satstr",
   url: "https://shopstr.market",
   logo: "https://shopstr.market/shopstr-2000x2000.png",
   description:
-    "Shopstr is a censorship-resistant, Bitcoin-native marketplace built on the Nostr protocol. Buy and sell anything with no account suspensions, no mandatory platform fees, and instant Bitcoin payments via Lightning.",
+    "Satstr is a censorship-resistant, Bitcoin-native marketplace built on the Nostr protocol. Buy and sell anything with no account suspensions, no mandatory platform fees, and instant Bitcoin payments via Lightning.",
   foundingDate: "2023",
   sameAs: [
     "https://github.com/shopstr-eng/shopstr",
@@ -18,7 +18,7 @@ const organizationSchema = {
   ],
   founder: {
     "@type": "Person",
-    name: "Shopstr Team",
+    name: "Satstr Team",
     description:
       "Advocates for permissionless commerce and financial sovereignty, with expertise in decentralized marketplace technology, Bitcoin Lightning payments, and the Nostr protocol.",
   },
@@ -27,7 +27,7 @@ const organizationSchema = {
 const websiteSchema = {
   "@context": "https://schema.org",
   "@type": "WebSite",
-  name: "Shopstr",
+  name: "Satstr",
   url: "https://shopstr.market",
   description:
     "The permissionless Bitcoin marketplace. Sell anything, get paid in Bitcoin via Lightning — no bans, no fees, no middlemen.",
@@ -48,23 +48,23 @@ const homepageFaqSchema = {
   mainEntity: [
     {
       "@type": "Question",
-      name: "Do I need Bitcoin to get started on Shopstr?",
+      name: "Do I need Bitcoin to get started on Satstr?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "Bitcoin is required to make purchases. No external wallet is needed — Shopstr has a built-in wallet ready to use. You can also send funds to an external wallet any time.",
+        text: "Bitcoin is required to make purchases. No external wallet is needed — Satstr has a built-in wallet ready to use. You can also send funds to an external wallet any time.",
       },
     },
     {
       "@type": "Question",
-      name: "Can my shop get banned or suspended on Shopstr?",
+      name: "Can my shop get banned or suspended on Satstr?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "No. Shopstr runs on Nostr, a decentralized protocol. No single company controls your listings or your keys — there is nothing to ban.",
+        text: "No. Satstr runs on Nostr, a decentralized protocol. No single company controls your listings or your keys — there is nothing to ban.",
       },
     },
     {
       "@type": "Question",
-      name: "How do I get paid on Shopstr?",
+      name: "How do I get paid on Satstr?",
       acceptedAnswer: {
         "@type": "Answer",
         text: "Payment goes directly from the buyer to you via Lightning or Cashu. It is instant, final, and self-custodial — no platform holds your money.",
@@ -72,10 +72,10 @@ const homepageFaqSchema = {
     },
     {
       "@type": "Question",
-      name: "Is Shopstr really free to use?",
+      name: "Is Satstr really free to use?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "Yes — there are no mandatory platform fees. Sellers may optionally set a donation rate to support Shopstr, but it is never required.",
+        text: "Yes — there are no mandatory platform fees. Sellers may optionally set a donation rate to support Satstr, but it is never required.",
       },
     },
   ],

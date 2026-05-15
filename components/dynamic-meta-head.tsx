@@ -88,9 +88,8 @@ const getMetaTags = (
     if (productData) {
       const slug = getListingSlug(productData, allParsed);
       return {
-        title: productData.title || "Shopstr Listing",
-        description:
-          productData.summary || "Check out this product on Shopstr!",
+        title: productData.title || "Satstr Listing",
+        description: productData.summary || "Check out this product on Satstr!",
         image: ensureAbsoluteUrl(
           productData.images?.[0] || "/shopstr-2000x2000.png",
           BASE_URL
@@ -101,8 +100,8 @@ const getMetaTags = (
 
     return {
       ...defaultTags,
-      title: "Shopstr Listing",
-      description: "Check out this listing on Shopstr!",
+      title: "Satstr Listing",
+      description: "Check out this listing on Satstr!",
     };
   } else if (pathname.startsWith("/marketplace/") && query.npub?.[0]) {
     const slug = query.npub[0];
@@ -122,9 +121,8 @@ const getMetaTags = (
     if (shopInfo) {
       const profileSlug = getProfileSlug(shopInfo.pubkey, profileData);
       return {
-        title: `${shopInfo.content.name} Shop` || "Shopstr Shop",
-        description:
-          shopInfo.content.about || "Check out this shop on Shopstr!",
+        title: `${shopInfo.content.name} Shop` || "Satstr Shop",
+        description: shopInfo.content.about || "Check out this shop on Satstr!",
         image: ensureAbsoluteUrl(
           shopInfo.content.ui.picture || "/shopstr-2000x2000.png",
           BASE_URL
@@ -134,8 +132,8 @@ const getMetaTags = (
     }
     return {
       ...defaultTags,
-      title: "Shopstr Shop",
-      description: "Check out this shop on Shopstr!",
+      title: "Satstr Shop",
+      description: "Check out this shop on Satstr!",
     };
   }
 
@@ -185,7 +183,7 @@ const DynamicHead = ({
     "@graph": [
       {
         "@type": "Organization",
-        name: "Shopstr",
+        name: "Satstr",
         url: "https://shopstr.market",
         logo: "https://shopstr.market/shopstr-2000x2000.png",
         description:
@@ -196,14 +194,14 @@ const DynamicHead = ({
         ],
         founder: {
           "@type": "Person",
-          name: "Shopstr Team",
+          name: "Satstr Team",
           description:
             "Bitcoin and Nostr protocol developers building permissionless, censorship-resistant commerce infrastructure.",
         },
       },
       {
         "@type": "SoftwareApplication",
-        name: "Shopstr",
+        name: "Satstr",
         url: "https://shopstr.market",
         applicationCategory: "ShoppingApplication",
         operatingSystem: "Web",
@@ -226,7 +224,7 @@ const DynamicHead = ({
       },
       {
         "@type": "WebSite",
-        name: "Shopstr",
+        name: "Satstr",
         url: "https://shopstr.market",
         potentialAction: {
           "@type": "SearchAction",
@@ -239,34 +237,34 @@ const DynamicHead = ({
         mainEntity: [
           {
             "@type": "Question",
-            name: "What is Shopstr?",
+            name: "What is Satstr?",
             acceptedAnswer: {
               "@type": "Answer",
-              text: "Shopstr is a global, permissionless marketplace built on the Nostr protocol that enables Bitcoin-native commerce without censorship or intermediaries.",
+              text: "Satstr is a global, permissionless marketplace built on the Nostr protocol that enables Bitcoin-native commerce without censorship or intermediaries.",
             },
           },
           {
             "@type": "Question",
-            name: "How do I pay on Shopstr?",
+            name: "How do I pay on Satstr?",
             acceptedAnswer: {
               "@type": "Answer",
-              text: "Shopstr supports Bitcoin payments including Lightning Network for instant, low-fee transactions.",
+              text: "Satstr supports Bitcoin payments including Lightning Network for instant, low-fee transactions.",
             },
           },
           {
             "@type": "Question",
-            name: "Do I need an account to use Shopstr?",
+            name: "Do I need an account to use Satstr?",
             acceptedAnswer: {
               "@type": "Answer",
-              text: "No account registration is required. Shopstr uses Nostr cryptographic key pairs — you generate keys and start buying or selling immediately with no identity verification.",
+              text: "No account registration is required. Satstr uses Nostr cryptographic key pairs — you generate keys and start buying or selling immediately with no identity verification.",
             },
           },
           {
             "@type": "Question",
-            name: "What makes Shopstr different from other marketplaces?",
+            name: "What makes Satstr different from other marketplaces?",
             acceptedAnswer: {
               "@type": "Answer",
-              text: "Shopstr is built on the open Nostr protocol and accepts only Bitcoin payments, meaning there is no central authority that can ban sellers, freeze funds, or censor listings. It is truly permissionless commerce.",
+              text: "Satstr is built on the open Nostr protocol and accepts only Bitcoin payments, meaning there is no central authority that can ban sellers, freeze funds, or censor listings. It is truly permissionless commerce.",
             },
           },
         ],

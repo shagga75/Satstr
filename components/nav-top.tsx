@@ -201,7 +201,7 @@ const TopNav = ({
                 isHomeActive ? "font-bold" : ""
               }`}
             >
-              {shopName != "" ? shopName : "Shopstr"}
+              {shopName != "" ? shopName : "Satstr"}
             </span>
           </Button>
         </div>
