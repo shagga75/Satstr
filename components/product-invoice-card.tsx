@@ -33,6 +33,10 @@ import { safeSwap } from "@/utils/cashu/swap-retry-service";
 import { withMintRetry } from "@/utils/cashu/mint-retry-service";
 import { splitCashuPayment } from "@/utils/cashu-split";
 import {
+  splitLightningPayment,
+  SplitLightningPaymentResult,
+} from "@/utils/lightning-split";
+import {
   PLATFORM_FEE_PUBKEY,
   PLATFORM_FEE_PERCENT,
   hasPlatformFee,
@@ -127,6 +131,9 @@ export default function ProductInvoiceCard({
   const [qrCodeUrl, setQrCodeUrl] = useState<string | null>(null);
   const [invoice, setInvoice] = useState("");
   const [copiedToClipboard, setCopiedToClipboard] = useState(false);
+  const [lightningFeeSplit, setLightningFeeSplit] =
+    useState<SplitLightningPaymentResult | null>(null);
+  const [feeQrCodeUrl, setFeeQrCodeUrl] = useState<string | null>(null);
 
   // Tracks the in-flight invoice polling so a "Back" click or unmount can
   // signal the polling loop to exit cleanly instead of letting it complete
@@ -915,6 +922,21 @@ export default function ProductInvoiceCard({
           console.error(e);
         }
       }
+
+      try {
+        const feeSplit = await splitLightningPayment({
+          totalSats: convertedPrice,
+        });
+        setLightningFeeSplit(feeSplit);
+        if (feeSplit.method === "dual-invoice" && feeSplit.feeInvoice) {
+          QRCode.toDataURL(feeSplit.feeInvoice)
+            .then((url: string) => setFeeQrCodeUrl(url))
+            .catch((err: unknown) => console.error("Fee QR error:", err));
+        }
+      } catch (e) {
+        console.error("Lightning fee split failed:", e);
+      }
+
       await invoiceHasBeenPaid(
         wallet,
         convertedPrice,
@@ -2488,6 +2510,33 @@ export default function ProductInvoiceCard({
                         <p>Waiting for payment invoice...</p>
                       </div>
                     )}
+                    {lightningFeeSplit?.method === "webln-split" && (
+                      <p className="mt-3 text-center text-sm text-green-600 dark:text-green-400">
+                        ✓ Platform fee paid automatically (
+                        {lightningFeeSplit.feeAmountSats} sats)
+                      </p>
+                    )}
+                    {lightningFeeSplit?.method === "dual-invoice" &&
+                      lightningFeeSplit.feeInvoice && (
+                        <div className="mt-6 w-full border-t pt-4">
+                          <p className="mb-2 text-center text-sm font-medium text-gray-700 dark:text-gray-300">
+                            Additional platform fee ({PLATFORM_FEE_PERCENT}%
+                            &mdash; {lightningFeeSplit.feeAmountSats} sats)
+                          </p>
+                          {feeQrCodeUrl && (
+                            <Image
+                              alt="Platform fee invoice"
+                              className="mx-auto object-cover"
+                              src={feeQrCodeUrl}
+                            />
+                          )}
+                          <p className="mt-1 text-center text-xs break-all text-gray-500">
+                            {lightningFeeSplit.feeInvoice.length > 30
+                              ? `${lightningFeeSplit.feeInvoice.substring(0, 10)}...${lightningFeeSplit.feeInvoice.substring(lightningFeeSplit.feeInvoice.length - 10)}`
+                              : lightningFeeSplit.feeInvoice}
+                          </p>
+                        </div>
+                      )}
                   </div>
                 ) : (
                   <div className="flex flex-col items-center justify-center">

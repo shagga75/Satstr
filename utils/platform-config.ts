@@ -10,6 +10,13 @@ export const PLATFORM_FEE_PUBKEY =
 
 export const ADMIN_PUBKEY = process.env.NEXT_PUBLIC_ADMIN_PUBKEY || null;
 
+export const PLATFORM_FEE_LN_ADDRESS =
+  process.env.NEXT_PUBLIC_PLATFORM_FEE_LN_ADDRESS || null;
+
+export function hasPlatformFeeLN(): boolean {
+  return !!PLATFORM_FEE_LN_ADDRESS;
+}
+
 const DEFAULT_RELAY_LIST = [
   "wss://relay.damus.io",
   "wss://relay.nostr.band",
