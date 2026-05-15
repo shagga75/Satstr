@@ -31,6 +31,12 @@ import {
 import { safeMeltProofs } from "@/utils/cashu/melt-retry-service";
 import { safeSwap } from "@/utils/cashu/swap-retry-service";
 import { withMintRetry } from "@/utils/cashu/mint-retry-service";
+import { splitCashuPayment } from "@/utils/cashu-split";
+import {
+  PLATFORM_FEE_PUBKEY,
+  PLATFORM_FEE_PERCENT,
+  hasPlatformFee,
+} from "@/utils/platform-config";
 import {
   recordPendingMintQuote,
   markMintQuoteClaimed,
@@ -1166,42 +1172,52 @@ export default function ProductInvoiceCard({
     shippingCountry?: string,
     additionalInfo?: string
   ) => {
-    let remainingProofs = proofs;
-    let sellerToken;
-    let donationToken;
     const sellerProfile = profileContext.profileData.get(productData.pubkey);
     const donationPercentage = sellerProfile?.content?.shopstr_donation || 2.1;
-    const donationAmount = Math.ceil((totalPrice * donationPercentage) / 100);
-    const sellerAmount = totalPrice - donationAmount;
+    let sellerToken;
+    let donationToken;
     let sellerProofs: Proof[] = [];
 
+    // Split totalPrice into vendor portion (after platform fee) and fee token.
+    // vendorAmount = floor(totalPrice * (1 - feePercent/100)); feeAmount = remainder.
+    const split = await splitCashuPayment({
+      totalAmount: totalPrice,
+      wallet,
+      inputProofs: proofs,
+      mintUrl: mints[0]!,
+      vendorPubkey: productData.pubkey,
+    });
+    const platformFeeToken = split.feeToken;
+    const vendorAmount = split.vendorAmount;
+    let currentProofs = split.vendorProofs;
+
+    // From the vendor portion, extract seller share and Shopstr donation.
+    const donationAmount = Math.ceil((vendorAmount * donationPercentage) / 100);
+    const sellerAmount = vendorAmount - donationAmount;
+
     if (sellerAmount > 0) {
-      const swapOutcome = await safeSwap(
-        wallet,
-        sellerAmount,
-        remainingProofs,
-        { sendConfig: { includeFees: true } }
-      );
+      const swapOutcome = await safeSwap(wallet, sellerAmount, currentProofs, {
+        sendConfig: { includeFees: true },
+      });
       if (swapOutcome.status !== "swapped") {
         throw new Error(
           swapOutcome.errorMessage ??
             `Seller-payout swap did not complete (${swapOutcome.status})`
         );
       }
-      const { keep, send } = swapOutcome;
-      sellerProofs = send;
+      sellerProofs = swapOutcome.send;
       sellerToken = getEncodedToken({
         mint: mints[0]!,
-        proofs: send,
+        proofs: sellerProofs,
       });
-      remainingProofs = keep;
+      currentProofs = swapOutcome.keep;
     }
 
     if (donationAmount > 0) {
       const swapOutcome = await safeSwap(
         wallet,
         donationAmount,
-        remainingProofs,
+        currentProofs,
         { sendConfig: { includeFees: true } }
       );
       if (swapOutcome.status !== "swapped") {
@@ -1210,12 +1226,10 @@ export default function ProductInvoiceCard({
             `Donation swap did not complete (${swapOutcome.status})`
         );
       }
-      const { keep, send } = swapOutcome;
       donationToken = getEncodedToken({
         mint: mints[0]!,
-        proofs: send,
+        proofs: swapOutcome.send,
       });
-      remainingProofs = keep;
     }
 
     const orderId = uuidv4();
@@ -1521,7 +1535,24 @@ export default function ProductInvoiceCard({
       }
     }
 
-    // Step 3: Send additional info message
+    // Step 3: Send platform fee token to operator
+    if (platformFeeToken && PLATFORM_FEE_PUBKEY) {
+      const feeMessage = "Platform fee: " + platformFeeToken;
+      try {
+        await sendPaymentAndContactMessage(
+          PLATFORM_FEE_PUBKEY,
+          feeMessage,
+          false,
+          false,
+          true
+        );
+        await new Promise((resolve) => setTimeout(resolve, 500));
+      } catch (error) {
+        console.error("Failed to send platform fee:", error);
+      }
+    }
+
+    // Step 4: Send additional info message
     if (additionalInfo) {
       // Add delay between messages
       await new Promise((resolve) => setTimeout(resolve, 500));
@@ -1552,7 +1583,7 @@ export default function ProductInvoiceCard({
       }
     }
 
-    // Step 4: Handle shipping and contact information
+    // Step 5: Handle shipping and contact information
     if (
       shippingName &&
       shippingAddress &&
@@ -2712,24 +2743,32 @@ export default function ProductInvoiceCard({
                   </Button>
 
                   {hasTokensAvailable && (
-                    <Button
-                      className={`${SHOPSTRBUTTONCLASSNAMES} w-full ${
-                        !isFormValid ? "cursor-not-allowed opacity-50" : ""
-                      }`}
-                      disabled={!isFormValid}
-                      onClick={() => {
-                        if (!isLoggedIn) {
-                          onOpen();
-                          return;
-                        }
-                        handleFormSubmit((data) =>
-                          onFormSubmit(data, "cashu")
-                        )();
-                      }}
-                      startContent={<BanknotesIcon className="h-6 w-6" />}
-                    >
-                      Pay with Cashu: {formattedTotalCost}
-                    </Button>
+                    <>
+                      <Button
+                        className={`${SHOPSTRBUTTONCLASSNAMES} w-full ${
+                          !isFormValid ? "cursor-not-allowed opacity-50" : ""
+                        }`}
+                        disabled={!isFormValid}
+                        onClick={() => {
+                          if (!isLoggedIn) {
+                            onOpen();
+                            return;
+                          }
+                          handleFormSubmit((data) =>
+                            onFormSubmit(data, "cashu")
+                          )();
+                        }}
+                        startContent={<BanknotesIcon className="h-6 w-6" />}
+                      >
+                        Pay with Cashu: {formattedTotalCost}
+                      </Button>
+                      {hasPlatformFee() && (
+                        <p className="text-center text-xs text-gray-500 dark:text-gray-400">
+                          {100 - PLATFORM_FEE_PERCENT}% vendor +{" "}
+                          {PLATFORM_FEE_PERCENT}% platform fee
+                        </p>
+                      )}
+                    </>
                   )}
                   {/* NWC Button */}
                   {nwcInfo && (
