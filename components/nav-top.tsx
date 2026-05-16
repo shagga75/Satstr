@@ -11,6 +11,7 @@ import { ProfileWithDropdown } from "./utility-components/profile/profile-dropdo
 import { ShopProfile } from "../utils/types/types";
 import { getLocalStorageJson } from "@/utils/safe-json";
 import { useFediContext } from "@/utils/fedi-detection";
+import { useIsAdmin } from "@/components/hooks/useModeration";
 
 const TopNav = ({
   setFocusedPubkey,
@@ -44,6 +45,7 @@ const TopNav = ({
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { isInFedi } = useFediContext();
+  const isAdmin = useIsAdmin();
 
   useEffect(() => {
     const fetchAndUpdateCartQuantity = async () => {
@@ -177,6 +179,17 @@ const TopNav = ({
           </span>
         )}
       </Button>
+      {isAdmin && (
+        <Button
+          className="text-light-text dark:text-dark-text dark:hover:text-accent-dark-text w-full bg-transparent hover:text-purple-700"
+          onClick={() => {
+            router.push("/moderation");
+            setIsMobileMenuOpen(false);
+          }}
+        >
+          Moderación
+        </Button>
+      )}
     </div>
   );
 
@@ -368,6 +381,14 @@ const TopNav = ({
               </span>
             )}
           </Button>
+          {isAdmin && (
+            <Button
+              className="text-shopstr-purple dark:text-shopstr-yellow dark:hover:text-accent-dark-text bg-transparent font-medium hover:text-purple-700"
+              onClick={() => router.push("/moderation")}
+            >
+              Moderación
+            </Button>
+          )}
         </div>
         <div className="hidden flex-shrink-0 items-center md:flex">
           {signedIn ? (

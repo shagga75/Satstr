@@ -3,6 +3,7 @@ import { deleteEvent } from "@/utils/nostr/nostr-helper-functions";
 import { NostrEvent } from "../utils/types/types";
 import { ProductContext, FollowsContext } from "../utils/context/context";
 import ProductCard from "./utility-components/product-card";
+import { useBannedPubkeys } from "@/components/hooks/useModeration";
 import DisplayProductModal from "./display-product-modal";
 import { SHOPSTRBUTTONCLASSNAMES } from "@/utils/STATIC-VARIABLES";
 import { Button, Pagination } from "@heroui/react";
@@ -57,6 +58,7 @@ const DisplayProducts = ({
 
   const { nostr } = useContext(NostrContext);
   const { signer, pubkey: userPubkey } = useContext(SignerContext);
+  const { bannedPubkeys } = useBannedPubkeys();
 
   // Load saved page from session storage on mount
   useEffect(() => {
@@ -141,6 +143,7 @@ const DisplayProducts = ({
     if (!productEvents || !isInitialized) return;
 
     const filtered = productEvents.filter((product) => {
+      if (bannedPubkeys.includes(product.pubkey)) return false;
       if (focusedPubkey && product.pubkey !== focusedPubkey) return false;
       if (
         !productSatisfiesAllFilters(product, {
@@ -200,6 +203,7 @@ const DisplayProducts = ({
     selectedCategories,
     focusedPubkey,
     isInitialized,
+    bannedPubkeys,
   ]);
 
   // Scroll effect only on page change
