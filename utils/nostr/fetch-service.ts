@@ -848,7 +848,12 @@ export const fetchReviews = async (
       // First load from database
       try {
         const response = await fetch("/api/db/fetch-reviews");
-        if (!response.ok) throw new Error("Failed to fetch reviews");
+        if (!response.ok) {
+          console.warn(
+            "fetch-service: /api/db/fetch-reviews unavailable (DB may not be configured), falling back to relay fetch"
+          );
+          return;
+        }
         const reviewsFromDb = await response.json();
 
         for (const event of reviewsFromDb) {
@@ -1081,7 +1086,12 @@ export const fetchAllRelays = async (
         const response = await fetch(
           `/api/db/fetch-relays?pubkey=${userPubkey}`
         );
-        if (!response.ok) throw new Error("Failed to fetch relay config");
+        if (!response.ok) {
+          console.warn(
+            "fetch-service: /api/db/fetch-relays unavailable (DB may not be configured), falling back to relay fetch"
+          );
+          return;
+        }
         const relayEventsFromDb = await response.json();
 
         for (const event of relayEventsFromDb) {
@@ -1218,7 +1228,12 @@ export const fetchAllBlossomServers = async (
         const response = await fetch(
           `/api/db/fetch-blossom?pubkey=${userPubkey}`
         );
-        if (!response.ok) throw new Error("Failed to fetch blossom config");
+        if (!response.ok) {
+          console.warn(
+            "fetch-service: /api/db/fetch-blossom unavailable (DB may not be configured), falling back to relay fetch"
+          );
+          return;
+        }
         const blossomEventsFromDb = await response.json();
 
         for (const event of blossomEventsFromDb) {
@@ -1331,7 +1346,12 @@ export const fetchCashuWallet = async (
         const response = await fetch(
           `/api/db/fetch-wallet?pubkey=${userPubkey}`
         );
-        if (!response.ok) throw new Error("Failed to fetch wallet events");
+        if (!response.ok) {
+          console.warn(
+            "fetch-service: /api/db/fetch-wallet unavailable (DB may not be configured), falling back to relay fetch"
+          );
+          return;
+        }
         const walletEventsFromDb = await response.json();
 
         for (const event of walletEventsFromDb) {
