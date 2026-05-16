@@ -18,6 +18,7 @@ import {
 import { ProductData } from "@/utils/parsers/product-parser-functions";
 import { Proof } from "@cashu/cashu-ts";
 import { NostrSigner } from "@/utils/nostr/signers/nostr-signer";
+import { DEFAULT_RELAYS } from "@/utils/platform-config";
 import { NostrManager } from "@/utils/nostr/nostr-manager";
 import {
   cacheEventToDatabase,
@@ -1671,13 +1672,7 @@ export function nostrExtensionLoaded() {
 }
 
 export function getDefaultRelays(): string[] {
-  return [
-    "wss://relay.damus.io",
-    "wss://nos.lol",
-    "wss://purplepag.es",
-    "wss://relay.primal.net",
-    "wss://relay.nostr.band",
-  ];
+  return DEFAULT_RELAYS;
 }
 
 export function withBlastr(relays: string[]): string[] {

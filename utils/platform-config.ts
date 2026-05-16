@@ -21,7 +21,8 @@ const DEFAULT_RELAY_LIST = [
   "wss://relay.damus.io",
   "wss://relay.nostr.band",
   "wss://nos.lol",
-  "wss://relay.snort.social",
+  "wss://relay.primal.net",
+  "wss://purplepag.es",
 ];
 
 export const DEFAULT_RELAYS = process.env.NEXT_PUBLIC_DEFAULT_RELAYS
