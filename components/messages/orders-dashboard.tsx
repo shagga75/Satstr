@@ -53,6 +53,13 @@ import {
 import { SHOPSTRBUTTONCLASSNAMES } from "@/utils/STATIC-VARIABLES";
 import { calculateWeightedScore } from "@/utils/parsers/review-parser-functions";
 import { createNip98AuthorizationHeader } from "@/utils/nostr/nip98-auth";
+import OrderTimeline from "@/components/OrderTimeline";
+import {
+  OrderEvent,
+  OrderStatus,
+  publishOrderUpdate,
+  getOrderHistory,
+} from "@/utils/orders";
 import { getSatoshiValue } from "@getalby/lightning-tools";
 import currencySelection from "@/public/currencySelection.json";
 import {
@@ -176,6 +183,16 @@ const OrdersDashboard = () => {
 
   const [showFailureModal, setShowFailureModal] = useState(false);
   const [failureText, setFailureText] = useState("");
+
+  const [showOrderDetailModal, setShowOrderDetailModal] = useState(false);
+  const [orderDetailOrder, setOrderDetailOrder] = useState<OrderData | null>(
+    null
+  );
+  const [orderHistory, setOrderHistory] = useState<OrderEvent[]>([]);
+  const [isLoadingHistory, setIsLoadingHistory] = useState(false);
+  const [orderActionInProgress, setOrderActionInProgress] = useState(false);
+  const [trackingInput, setTrackingInput] = useState("");
+  const [disputeInput, setDisputeInput] = useState("");
 
   const {
     signer,
@@ -1330,6 +1347,72 @@ const OrdersDashboard = () => {
     }
   };
 
+  const handleOpenOrderDetail = (order: OrderData) => {
+    setOrderDetailOrder(order);
+    setTrackingInput("");
+    setDisputeInput("");
+    setShowOrderDetailModal(true);
+    setIsLoadingHistory(true);
+    const allMessages: NostrMessageEvent[] = Array.from(
+      chatsContext.chatsMap.values()
+    ).flat();
+    const history = getOrderHistory(order.orderId, allMessages, []);
+    setOrderHistory(history);
+    setIsLoadingHistory(false);
+  };
+
+  const handleCloseOrderDetail = () => {
+    setShowOrderDetailModal(false);
+    setOrderDetailOrder(null);
+    setOrderHistory([]);
+  };
+
+  const handleOrderAction = async (
+    status: OrderStatus,
+    message: string,
+    tracking?: string
+  ) => {
+    if (!orderDetailOrder || !signer || !nostr) return;
+    setOrderActionInProgress(true);
+    try {
+      const isSale = orderDetailOrder.isSale ?? false;
+      const recipientPubkey = isSale
+        ? orderDetailOrder.buyerPubkey
+        : orderDetailOrder.productAddress.split(":")[1] ||
+          orderDetailOrder.buyerPubkey;
+      await publishOrderUpdate(
+        orderDetailOrder.orderId,
+        status,
+        message,
+        tracking || undefined,
+        signer,
+        recipientPubkey,
+        nostr
+      );
+      setOrders((prev) =>
+        prev.map((o) =>
+          o.orderId === orderDetailOrder.orderId ? { ...o, status } : o
+        )
+      );
+      const newEvent: OrderEvent = {
+        id: `local-${Date.now()}`,
+        orderId: orderDetailOrder.orderId,
+        status,
+        message: message || undefined,
+        trackingNumber: tracking || undefined,
+        timestamp: Math.floor(Date.now() / 1000),
+        authorPubkey: userPubkey ?? "",
+      };
+      setOrderHistory((prev) => [...prev, newEvent]);
+      setTrackingInput("");
+      setDisputeInput("");
+    } catch (err) {
+      console.error("Order action failed:", err);
+    } finally {
+      setOrderActionInProgress(false);
+    }
+  };
+
   if (isLoading || !chatsContext || chatsContext.isLoading) {
     return (
       <div className="flex h-[66vh] items-center justify-center">
@@ -1491,6 +1574,12 @@ const OrdersDashboard = () => {
                         <td className="text-light-text dark:text-dark-text px-4 py-4 text-sm whitespace-nowrap">
                           <div className="flex flex-col gap-1">
                             <span>{order.orderId.substring(0, 8)}...</span>
+                            <button
+                              onClick={() => handleOpenOrderDetail(order)}
+                              className="text-shopstr-purple-light hover:text-shopstr-purple dark:text-shopstr-yellow-light dark:hover:text-shopstr-yellow cursor-pointer text-left text-xs underline"
+                            >
+                              Ver detalles
+                            </button>
                             {order.reviewRating !== undefined ? (
                               <span className="text-shopstr-purple-light dark:text-shopstr-yellow-light text-xs underline">
                                 Rating: {order.reviewRating.toFixed(1)}
@@ -2104,6 +2193,142 @@ const OrdersDashboard = () => {
           setFailureText("");
         }}
       />
+
+      {/* Order Detail Modal */}
+      <Modal
+        backdrop="blur"
+        isOpen={showOrderDetailModal}
+        onClose={handleCloseOrderDetail}
+        classNames={{
+          body: "py-6",
+          backdrop: "bg-[#292f46]/50 backdrop-opacity-60",
+          header: "border-b-[1px] border-[#292f46]",
+          footer: "border-t-[1px] border-[#292f46]",
+          closeButton: "hover:bg-black/5 active:bg-white/10",
+        }}
+        scrollBehavior="outside"
+        size="2xl"
+      >
+        <ModalContent>
+          <ModalHeader className="text-light-text dark:text-dark-text flex flex-col gap-1">
+            Detalles de la orden {orderDetailOrder?.orderId.substring(0, 8)}...
+          </ModalHeader>
+          <ModalBody>
+            <div className="mb-4">
+              <h3 className="text-light-text dark:text-dark-text mb-2 text-sm font-semibold">
+                Historial
+              </h3>
+              {isLoadingHistory ? (
+                <div className="flex justify-center py-4">
+                  <ShopstrSpinner />
+                </div>
+              ) : (
+                <OrderTimeline events={orderHistory} />
+              )}
+            </div>
+
+            {/* Seller actions */}
+            {orderDetailOrder?.isSale && (
+              <div className="border-t border-gray-200 pt-4 dark:border-gray-700">
+                <h3 className="text-light-text dark:text-dark-text mb-3 text-sm font-semibold">
+                  Acciones del vendedor
+                </h3>
+                <div className="flex flex-col gap-3">
+                  <Button
+                    size="sm"
+                    className={SHOPSTRBUTTONCLASSNAMES}
+                    isLoading={orderActionInProgress}
+                    isDisabled={orderActionInProgress}
+                    onClick={() =>
+                      handleOrderAction("processing", "Orden en proceso")
+                    }
+                  >
+                    ⚙️ Marcar en proceso
+                  </Button>
+                  <div className="flex flex-col gap-2">
+                    <Input
+                      label="Número de tracking"
+                      size="sm"
+                      variant="bordered"
+                      className="text-light-text dark:text-dark-text"
+                      value={trackingInput}
+                      onChange={(e) => setTrackingInput(e.target.value)}
+                      placeholder="ABC123456789"
+                    />
+                    <Button
+                      size="sm"
+                      className={SHOPSTRBUTTONCLASSNAMES}
+                      isLoading={orderActionInProgress}
+                      isDisabled={
+                        orderActionInProgress || !trackingInput.trim()
+                      }
+                      onClick={() =>
+                        handleOrderAction(
+                          "shipped",
+                          "Orden enviada",
+                          trackingInput.trim()
+                        )
+                      }
+                    >
+                      📦 Marcar enviado
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Buyer actions */}
+            {!orderDetailOrder?.isSale && (
+              <div className="border-t border-gray-200 pt-4 dark:border-gray-700">
+                <h3 className="text-light-text dark:text-dark-text mb-3 text-sm font-semibold">
+                  Acciones del comprador
+                </h3>
+                <div className="flex flex-col gap-3">
+                  <Button
+                    size="sm"
+                    className={SHOPSTRBUTTONCLASSNAMES}
+                    isLoading={orderActionInProgress}
+                    isDisabled={orderActionInProgress}
+                    onClick={() =>
+                      handleOrderAction("completed", "Orden recibida")
+                    }
+                  >
+                    ✅ Confirmar recibido
+                  </Button>
+                  <div className="flex flex-col gap-2">
+                    <Input
+                      label="Descripción de la disputa"
+                      size="sm"
+                      variant="bordered"
+                      className="text-light-text dark:text-dark-text"
+                      value={disputeInput}
+                      onChange={(e) => setDisputeInput(e.target.value)}
+                      placeholder="Describe el problema..."
+                    />
+                    <Button
+                      size="sm"
+                      color="danger"
+                      variant="flat"
+                      isLoading={orderActionInProgress}
+                      isDisabled={orderActionInProgress || !disputeInput.trim()}
+                      onClick={() =>
+                        handleOrderAction("disputed", disputeInput.trim())
+                      }
+                    >
+                      ⚠️ Abrir disputa
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            )}
+          </ModalBody>
+          <ModalFooter>
+            <Button variant="light" onClick={handleCloseOrderDetail}>
+              Cerrar
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </div>
   );
 };
