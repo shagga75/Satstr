@@ -102,6 +102,8 @@ export default function ProductForm({
           "Shipping Option": oldValues.shippingType,
           "Shipping Cost": oldValues.shippingCost,
           "Pickup Locations": oldValues.pickupLocations || [""],
+          "Product Type": oldValues.productType || "digital",
+          "Requires Address": oldValues.requiresAddress || false,
           Category: oldValues.categories ? oldValues.categories.join(",") : "",
           Quantity: oldValues.quantity ? String(oldValues.quantity) : "",
           Sizes: oldValues.sizes ? oldValues.sizes.join(",") : "",
@@ -135,6 +137,8 @@ export default function ProductForm({
           "Shipping Option": "N/A",
           Status: "active",
           "Pickup Locations": [""],
+          "Product Type": "digital",
+          "Requires Address": false,
         },
   });
 
@@ -287,6 +291,14 @@ export default function ProductForm({
         .forEach((location) => {
           tags.push(["pickup_location", location.trim()]);
         });
+    }
+
+    if (data["Product Type"] && data["Product Type"] !== "") {
+      tags.push(["type", data["Product Type"] as string]);
+    }
+
+    if (data["Requires Address"]) {
+      tags.push(["requires_address", "true"]);
     }
 
     const newListing = await PostListing(tags, signer!, isLoggedIn!, nostr!);
@@ -883,6 +895,55 @@ export default function ProductForm({
                 />
               </div>
             )}
+            {/* Product type and delivery */}
+            <div className="mt-4 rounded-lg border border-gray-200 p-4 dark:border-gray-700">
+              <p className="text-light-text dark:text-dark-text mb-3 text-sm font-semibold">
+                Product type &amp; delivery
+              </p>
+              <Controller
+                name="Product Type"
+                control={control}
+                render={({ field: { onChange, value } }) => (
+                  <Select
+                    variant="bordered"
+                    label="Product type"
+                    aria-label="Product type"
+                    selectedKeys={value ? [value as string] : ["digital"]}
+                    onChange={(e) => onChange(e.target.value)}
+                    classNames={{ base: "mb-3" }}
+                  >
+                    <SelectItem key="digital">Digital</SelectItem>
+                    <SelectItem key="physical">Physical</SelectItem>
+                    <SelectItem key="service">Service</SelectItem>
+                  </Select>
+                )}
+              />
+              <Controller
+                name="Requires Address"
+                control={control}
+                render={({ field: { onChange, value } }) => (
+                  <div className="flex items-center justify-between rounded-lg border border-gray-200 p-3 dark:border-gray-700">
+                    <div className="flex flex-col">
+                      <span className="text-light-text dark:text-dark-text text-sm font-semibold">
+                        Require shipping address
+                      </span>
+                      <span className="text-tiny text-gray-500">
+                        Buyer must provide a shipping address at checkout
+                      </span>
+                    </div>
+                    <Switch
+                      isSelected={!!value}
+                      onValueChange={onChange}
+                      classNames={{
+                        wrapper:
+                          "group-data-[selected=true]:bg-shopstr-purple dark:group-data-[selected=true]:bg-shopstr-yellow",
+                      }}
+                    />
+                  </div>
+                )}
+              />
+            </div>
+
             <Controller
               name="Category"
               control={control}

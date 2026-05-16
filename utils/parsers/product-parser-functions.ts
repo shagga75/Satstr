@@ -43,6 +43,8 @@ export type ProductData = {
   pickupLocations?: string[];
   expiration?: number;
   rawEvent?: NostrEvent;
+  productType?: "digital" | "physical" | "service";
+  requiresAddress?: boolean;
 };
 
 export const parseTags = (productEvent: NostrEvent) => {
@@ -181,6 +183,18 @@ export const parseTags = (productEvent: NostrEvent) => {
         break;
       case "valid_until":
         parsedData.expiration = Number(values[0]);
+        break;
+      case "type":
+        if (
+          values[0] === "digital" ||
+          values[0] === "physical" ||
+          values[0] === "service"
+        ) {
+          parsedData.productType = values[0];
+        }
+        break;
+      case "requires_address":
+        parsedData.requiresAddress = values[0] === "true";
         break;
       default:
         return;

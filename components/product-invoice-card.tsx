@@ -360,6 +360,16 @@ export default function ProductInvoiceCard({
     fetchKeys();
   }, []);
 
+  // When the listing requires an address, skip order-type selection and go
+  // straight to the shipping form so the buyer fills in their address before
+  // choosing a payment method.
+  useEffect(() => {
+    if (productData.requiresAddress) {
+      setShowOrderTypeSelection(false);
+      setFormType("shipping");
+    }
+  }, [productData.requiresAddress]);
+
   useEffect(() => {
     const loadNwcInfo = () => {
       const { nwcInfo: infoString } = getLocalStorageData();

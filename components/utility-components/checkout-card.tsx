@@ -680,6 +680,32 @@ export default function CheckoutCard({
                       </span>
                     </div>
                   )}
+                  <div className="mt-1 flex flex-wrap gap-1">
+                    {productData.productType && (
+                      <Chip
+                        size="sm"
+                        variant="flat"
+                        color={
+                          productData.productType === "physical"
+                            ? "warning"
+                            : productData.productType === "service"
+                              ? "secondary"
+                              : "default"
+                        }
+                      >
+                        {productData.productType === "physical"
+                          ? "📦 Physical"
+                          : productData.productType === "service"
+                            ? "🛠 Service"
+                            : "💾 Digital"}
+                      </Chip>
+                    )}
+                    {productData.requiresAddress && (
+                      <Chip size="sm" variant="flat" color="primary">
+                        🏠 Address required
+                      </Chip>
+                    )}
+                  </div>
                   <div className="hidden sm:block">
                     <p className="text-light-text dark:text-dark-text mt-4 w-full text-left text-lg break-words whitespace-pre-wrap">
                       {renderSummary()}
