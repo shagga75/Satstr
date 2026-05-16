@@ -4,9 +4,9 @@
   "description": "Shop freely.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#E8E8E8",
-  "theme_color": "#E8E8E8",
-  "orientation": "any",
+  "background_color": "#000000",
+  "theme_color": "#000000",
+  "orientation": "portrait",
   "scope": "/",
   "categories": ["shopping", "marketplace", "ecommerce"],
   "icons": [

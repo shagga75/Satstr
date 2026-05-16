@@ -55,6 +55,7 @@ import {
 import { Proof } from "@cashu/cashu-ts";
 import TopNav from "@/components/nav-top";
 import PageLoadingBar from "@/components/page-loading-bar";
+import { useFediContext } from "@/utils/fedi-detection";
 import DynamicHead from "../components/dynamic-meta-head";
 import StructuredData from "../components/structured-data";
 import {
@@ -71,6 +72,7 @@ function Shopstr({ props }: { props: AppProps }) {
   const { Component, pageProps } = props;
   const { nostr } = useContext(NostrContext);
   const { signer, isLoggedIn } = useContext(SignerContext);
+  const { isInFedi, hasWebLN } = useFediContext();
 
   const [productContext, setProductContext] = useState<ProductContextInterface>(
     {
@@ -831,6 +833,24 @@ function Shopstr({ props }: { props: AppProps }) {
       });
     }
   }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (isInFedi) {
+      document.body.classList.add("fedi-mode");
+    } else {
+      document.body.classList.remove("fedi-mode");
+    }
+  }, [isInFedi]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (hasWebLN && window.webln) {
+      window.webln.enable().catch((err: Error) => {
+        console.warn("WebLN enable failed:", err);
+      });
+    }
+  }, [hasWebLN]);
 
   return (
     <>

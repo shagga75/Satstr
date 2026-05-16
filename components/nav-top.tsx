@@ -10,6 +10,7 @@ import SignInModal from "./sign-in/SignInModal";
 import { ProfileWithDropdown } from "./utility-components/profile/profile-dropdown";
 import { ShopProfile } from "../utils/types/types";
 import { getLocalStorageJson } from "@/utils/safe-json";
+import { useFediContext } from "@/utils/fedi-detection";
 
 const TopNav = ({
   setFocusedPubkey,
@@ -42,6 +43,7 @@ const TopNav = ({
   const [shopName, setShopName] = useState("");
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { isInFedi } = useFediContext();
 
   useEffect(() => {
     const fetchAndUpdateCartQuantity = async () => {
@@ -177,6 +179,68 @@ const TopNav = ({
       </Button>
     </div>
   );
+
+  if (isInFedi) {
+    return (
+      <div
+        data-main-nav
+        className="bg-light-fg dark:bg-dark-fg fixed top-0 z-50 w-full border-b border-zinc-200 shadow-lg dark:border-zinc-800"
+      >
+        <div className="flex items-center justify-between px-4 py-2">
+          <Button
+            onClick={handleHomeClick}
+            className="text-light-text dark:text-dark-text flex items-center bg-transparent"
+          >
+            <Image
+              alt="Satstr logo"
+              height={40}
+              radius="sm"
+              src={shopLogoURL || "/shopstr-2000x2000.png"}
+              width={40}
+            />
+            <span className="ml-2 text-xl font-bold">
+              {shopName || "Satstr"}
+            </span>
+          </Button>
+          <div className="flex items-center gap-2">
+            <Button
+              className="text-light-text dark:text-dark-text bg-transparent"
+              onClick={() => handleRoute("/wallet")}
+            >
+              Wallet
+            </Button>
+            <Button
+              className="text-light-text dark:text-dark-text bg-transparent"
+              onClick={() => handleRoute("/cart")}
+            >
+              Cart
+              {cartQuantity > 0 && (
+                <span className="bg-shopstr-purple dark:bg-shopstr-yellow dark:text-dark-bg ml-1 inline-flex h-5 min-w-5 items-center justify-center rounded-full px-1.5 text-xs font-bold text-white">
+                  {cartQuantity}
+                </span>
+              )}
+            </Button>
+            {signedIn ? (
+              <ProfileWithDropdown
+                pubkey={userPubkey!}
+                baseClassname="flex-shrink-0 rounded-3xl hover:scale-105 hover:bg-light-bg hover:shadow-lg dark:hover:bg-dark-bg"
+                dropDownKeys={["user_profile", "settings", "logout"]}
+                nameClassname="hidden"
+              />
+            ) : (
+              <Button
+                onClick={onOpen}
+                className="text-light-text dark:text-dark-text bg-transparent"
+              >
+                Sign In
+              </Button>
+            )}
+          </div>
+        </div>
+        <SignInModal isOpen={isOpen} onClose={onClose} />
+      </div>
+    );
+  }
 
   return (
     <div

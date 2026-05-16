@@ -72,3 +72,19 @@ body {
 body.sf-active [data-main-nav] {
   display: none !important;
 }
+
+/* Fedi Mini App WebView optimizations */
+.fedi-mode .desktop-nav {
+  display: none !important;
+}
+.fedi-mode {
+  height: 100dvh;
+  overflow: hidden;
+}
+.fedi-mode button {
+  min-height: 44px;
+  min-width: 44px;
+}
+.fedi-mode .bottom-nav {
+  padding-bottom: env(safe-area-inset-bottom);
+}
